@@ -21,7 +21,7 @@ public class StoreController {
         return sallingService.getStores(8000);
     }
     @GetMapping("/foodwaste")
-    public List<ProductResponse> getFoodWaste(){
-        return sallingService.getFoodWaste("efba0457-090e-4132-81ba-c72b4c8e7fee");
+    public String getFoodWaste(){
+        return sallingService.ingredients("efba0457-090e-4132-81ba-c72b4c8e7fee");
     }
 }

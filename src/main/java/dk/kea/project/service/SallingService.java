@@ -9,6 +9,7 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 public class SallingService{
@@ -41,21 +42,28 @@ public class SallingService{
         return stores;
     }
     public List<ProductResponse> getFoodWaste(String id){
-        List<ProductResponse> products = new ArrayList<>();
-        var res = webClient.method(HttpMethod.GET)
+        List<ProductResponse> products =
+        webClient.method(HttpMethod.GET)
                 .uri(SALLING_API_URL_V1 + "/food-waste/" + id)
                 .header("Authorization", "Bearer " + SALLING_API_KEY)
                 .retrieve()
                 .bodyToFlux(ProductResponse.class)
                 .collectList()
-                .doOnError(e -> System.out.println(e.getMessage()));
+                .doOnError(e -> System.out.println(e.getMessage()))
+              .block();
 
-        res.subscribe(productResponse -> {
-            for(ProductResponse response : productResponse){
-                System.out.println(response);
-                products.add(response);
-            }
-        });
-        return products;
+
+                return products;
+    }
+    public String ingredients(String storeId){
+        System.out.println("ingredients hentes");
+        List<ProductResponse> products=getFoodWaste(storeId);
+        System.out.println("test "+products);
+        String ingredients = products.stream()
+              .flatMap(productResponse -> productResponse.getClearances().stream()
+                    .map(clearance -> clearance.getProduct().getDescription()))
+              .collect(Collectors.joining(", "));
+        System.out.println(ingredients);
+        return ingredients;
     }
 }

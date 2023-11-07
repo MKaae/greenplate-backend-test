@@ -10,22 +10,22 @@ import java.util.List;
 @Setter
 @NoArgsConstructor
 public class ProductResponse {
-    private List<Clearance> clearances;
+    public List<Clearance> clearances;
 
-    public String toString(){
-        return clearances.get(1).product.description;
-    }
+//    public String toString(){
+//        return clearances.get(0).product.description;
+//    }
     @Getter
     @Setter
     @NoArgsConstructor
-    private static class Clearance{
+    public static class Clearance{
         public Offer offer;
         public Product product;
     }
     @Getter
     @Setter
     @NoArgsConstructor
-    private static class Offer{
+    public static class Offer{
         public double originalPrice;
         public double newPrice;
         public double discount;
@@ -34,7 +34,7 @@ public class ProductResponse {
     @Getter
     @Setter
     @NoArgsConstructor
-    private static class Product{
+    public static class Product{
         public String description;
         public String ean;
         public String image;
