@@ -26,20 +26,17 @@ public class SallingService{
         this.webClient = WebClient.create();
     }
     public List<StoreResponse> getStores(int zipcode){
-        List<StoreResponse> stores = new ArrayList<>();
-        var res = webClient.method(HttpMethod.GET)
+        List<StoreResponse> stores = webClient.method(HttpMethod.GET)
                 .uri(SALLING_API_URL_V2 + "/stores?zip="+ zipcode)
                 .header("Authorization", "Bearer " + SALLING_API_KEY)
                 .retrieve()
                 .bodyToFlux(StoreResponse.class)
                 .collectList()
-                .doOnError(e -> System.out.println(e.getMessage()));
-        res.subscribe(storeResponses -> {
-            for(StoreResponse response : storeResponses){
-                stores.add(response);
-            }
-        });
+                .doOnError(e -> System.out.println(e.getMessage()))
+                .block();
+        System.out.println(stores);
         return stores;
+
     }
     public List<ProductResponse> getFoodWaste(String id){
         List<ProductResponse> products =
@@ -50,7 +47,7 @@ public class SallingService{
                 .bodyToFlux(ProductResponse.class)
                 .collectList()
                 .doOnError(e -> System.out.println(e.getMessage()))
-              .block();
+                .block();
 
 
                 return products;

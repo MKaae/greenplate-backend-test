@@ -5,6 +5,7 @@ import dk.kea.project.dto.StoreResponse;
 import dk.kea.project.service.SallingService;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
@@ -17,8 +18,8 @@ public class StoreController {
         this.sallingService = sallingService;
     }
     @GetMapping
-    public List<StoreResponse> getStores(){
-        return sallingService.getStores(8000);
+    public List<StoreResponse> getStores(@RequestParam int zipcode){
+        return sallingService.getStores(zipcode);
     }
     @GetMapping("/foodwaste")
     public String getFoodWaste(){
