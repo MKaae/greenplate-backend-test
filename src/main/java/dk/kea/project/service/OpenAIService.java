@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import dk.kea.project.dto.ChatRecipeRequest;
 import dk.kea.project.dto.ChatRecipeResponse;
 import dk.kea.project.dto.MyRecipe;
+import dk.kea.project.entity.ApiUsage;
+import dk.kea.project.repository.ApiUsageRepository;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
@@ -31,11 +33,13 @@ public class OpenAIService {
 	public final static double TOP_P = 1.0;
 	private WebClient client;
 	SallingService sallingService;
+	ApiUsageRepository apiUsageRepository;
 
 
-	public OpenAIService(SallingService sallingService) {
+	public OpenAIService(SallingService sallingService, ApiUsageRepository apiUsageRepository) {
 		this.client = WebClient.create();
 		this.sallingService = sallingService;
+		this.apiUsageRepository = apiUsageRepository;
 	}
 	//Use this constructor for testing, to inject a mock client
 //	public OpenAIService(WebClient client, SallingService sallingService) {
@@ -74,6 +78,11 @@ public class OpenAIService {
 					.block();
 			String responseMsg = response.getChoices().get(0).getMessage().getContent();
 			int tokensUsed = response.getUsage().getTotal_tokens();
+
+			// Save apiusage statistics to database
+			ApiUsage apiUsage = new ApiUsage(tokensUsed);
+			apiUsageRepository.save(apiUsage);
+			
 			System.out.print("Tokens used: " + tokensUsed);
 			System.out.print(". Cost ($0.0015 / 1K tokens) : $" + String.format("%6f",(tokensUsed * 0.0015 / 1000)));
 			System.out.println(". For 1$, this is the amount of similar requests you can make: " + Math.round(1/(tokensUsed * 0.0015 / 1000)));
