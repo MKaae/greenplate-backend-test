@@ -8,10 +8,7 @@ import io.github.bucket4j.Refill;
 import jakarta.servlet.http.HttpServletRequest;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.CrossOrigin;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 
@@ -19,14 +16,13 @@ import java.time.Duration;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-@Controller
+@RestController
 @RequestMapping("/api/recipes/limited")
-@CrossOrigin(origins = "*")
 public class RecipeControllerLimited {
 
     // Rate limiting parameters
-    private final int BUCKET_CAPACITY = 1;
-    private final int REFILL_AMOUNT = 1;
+    private final int BUCKET_CAPACITY = 99999;
+    private final int REFILL_AMOUNT = 99999;
     private final int REFILL_TIME = 9999;
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
@@ -50,8 +46,15 @@ public class RecipeControllerLimited {
         this.openAIService = openAIService;
 
     }
+    
+    @GetMapping("/test")
+    public String makeTestRequest(){
+        return "Test";
+    }
     @GetMapping
-    public MyRecipe makeRequest(String storeId, HttpServletRequest request) {
+    public MyRecipe makeRequest(@RequestParam String storeId, HttpServletRequest request) {
+        System.out.println("makeRequestLimited()");       
+        
         String ip = request.getRemoteAddr();
         Bucket bucket = getBucket(ip);
 
@@ -59,8 +62,8 @@ public class RecipeControllerLimited {
             System.out.println("Too many requests, try again later");
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many requests, try again later");
         }
-
-        storeId="efba0457-090e-4132-81ba-c72b4c8e7fee";
-        return openAIService.makeRequest(storeId, SYSTEM_MESSAGE);
+        MyRecipe myRecipe = openAIService.makeRequest(storeId, SYSTEM_MESSAGE);
+        System.out.println(myRecipe);
+        return myRecipe;
     }
 }
