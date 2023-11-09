@@ -21,6 +21,7 @@ public class RecipeController {
 		}
 		@GetMapping
 		public MyRecipe makeRequest(String storeId) {
+			System.out.println("makeRequest()");
 			storeId="efba0457-090e-4132-81ba-c72b4c8e7fee";
 			return openAIService.makeRequest(storeId, SYSTEM_MESSAGE);
 		}
