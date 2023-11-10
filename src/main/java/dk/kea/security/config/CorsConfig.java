@@ -12,6 +12,7 @@ public class CorsConfig {
 
     //When you know the domain name for your client, add it below before deployment
     private static final String[] ALLOWED_ORIGINS = new String[] {
+            "*",
             "lemon-wave-0ccb79b03.4.azurestaticapps.net",
             "http://127.0.0.1:5500"
     };
