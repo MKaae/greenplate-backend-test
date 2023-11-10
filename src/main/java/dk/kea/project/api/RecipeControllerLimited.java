@@ -21,9 +21,9 @@ import java.util.concurrent.ConcurrentHashMap;
 public class RecipeControllerLimited {
 
     // Rate limiting parameters
-    private final int BUCKET_CAPACITY = 99999;
-    private final int REFILL_AMOUNT = 99999;
-    private final int REFILL_TIME = 9999;
+    private final int BUCKET_CAPACITY = 3;
+    private final int REFILL_AMOUNT = 3;
+    private final int REFILL_TIME = 1440;
 
     private final Map<String, Bucket> buckets = new ConcurrentHashMap<>();
 
