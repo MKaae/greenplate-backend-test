@@ -49,8 +49,7 @@ public class OpenAIService {
 
 
 	public MyRecipe makeRequest(String storeID, String _systemMessage) {
-		String ingredients = sallingService.ingredients(storeID);
-		String userPrompt=ingredients.substring(0,200);
+		String userPrompt = sallingService.ingredients(storeID);
 		ChatRecipeRequest requestDto = new ChatRecipeRequest();
 		requestDto.setModel(MODEL);
 		requestDto.setTemperature(TEMPERATURE);

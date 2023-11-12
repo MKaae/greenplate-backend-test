@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.reactive.function.client.WebClient;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -34,8 +36,12 @@ public class SallingService{
                 .collectList()
                 .doOnError(e -> System.out.println(e.getMessage()))
                 .block();
-        System.out.println(stores);
-        return stores;
+        List<String> desiredBrands = Arrays.asList("netto", "bilka", "foetex");
+
+        List<StoreResponse> filteredStores = stores.stream()
+                .filter(store -> desiredBrands.contains(store.getBrand()))
+                .toList();
+        return filteredStores;
 
     }
     public List<ProductResponse> getFoodWaste(String id){
@@ -53,14 +59,15 @@ public class SallingService{
                 return products;
     }
     public String ingredients(String storeId){
-        System.out.println("ingredients hentes");
         List<ProductResponse> products=getFoodWaste(storeId);
-        System.out.println("test "+products);
         String ingredients = products.stream()
               .flatMap(productResponse -> productResponse.getClearances().stream()
                     .map(clearance -> clearance.getProduct().getDescription()))
               .collect(Collectors.joining(", "));
-        System.out.println(ingredients);
-        return ingredients;
+        List<String> ingredientsList = Arrays.asList(ingredients.split(", "));
+        Collections.shuffle(ingredientsList);
+        List<String> selectedList = ingredientsList.subList(0, Math.min(10, ingredientsList.size()));
+        String result = String.join(",", selectedList);
+        return result;
     }
 }

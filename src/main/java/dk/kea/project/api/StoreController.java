@@ -21,9 +21,4 @@ public class StoreController {
     public List<StoreResponse> getStores(@RequestParam int zipcode){
         return sallingService.getStores(zipcode);
     }
-    @GetMapping("/foodwaste")
-    public String getFoodWaste(){
-        System.out.println("getFoodWaste()");
-        return sallingService.ingredients("efba0457-090e-4132-81ba-c72b4c8e7fee");
-    }
 }

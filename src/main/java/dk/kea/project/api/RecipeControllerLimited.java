@@ -46,15 +46,8 @@ public class RecipeControllerLimited {
         this.openAIService = openAIService;
 
     }
-    
-    @GetMapping("/test")
-    public String makeTestRequest(){
-        return "Test";
-    }
     @GetMapping
     public MyRecipe makeRequest(@RequestParam String storeId, HttpServletRequest request) {
-        System.out.println("makeRequestLimited()");       
-        
         String ip = request.getRemoteAddr();
         Bucket bucket = getBucket(ip);
 
@@ -63,7 +56,6 @@ public class RecipeControllerLimited {
             throw new ResponseStatusException(HttpStatus.TOO_MANY_REQUESTS, "Too many requests, try again later");
         }
         MyRecipe myRecipe = openAIService.makeRequest(storeId, SYSTEM_MESSAGE);
-        System.out.println(myRecipe);
         return myRecipe;
     }
 }
